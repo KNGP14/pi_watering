@@ -4,7 +4,7 @@ import configparser
 
 # Konfigurationsdatei einlesen
 config = configparser.ConfigParser()
-config.read('main.config')
+config.read('pi_watering.config')
 
 # Zeitschaltungen
 config_section='ZEITSTEUERUNG'
