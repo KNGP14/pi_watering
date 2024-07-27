@@ -4,7 +4,7 @@ import configparser
 
 # Konfigurationsdatei einlesen
 config = configparser.ConfigParser()
-config.read('gpio.config')
+config.read('main.config')
 
 # Zeitschaltungen
 config_section='ZEITSTEUERUNG'
