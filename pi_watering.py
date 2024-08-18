@@ -20,14 +20,6 @@ SECONDS_KUECHE_PAVILLION = config.getint(config_section, 'SECONDS_KUECHE_PAVILLI
 SECONDS_GARAGE = config.getint(config_section, 'SECONDS_GARAGE', fallback=120)
 SECONDS_BEET_EINGANG = config.getint(config_section, 'SECONDS_BEET_EINGANG', fallback=100)
 
-# GPIO-Belegung
-config_section='GPIO_BELEGUNG'
-GPIO_OUT_HAUPTWASSER = config.getint(config_section, 'GPIO_OUT_HAUPTWASSER', fallback=6)
-GPIO_OUT_KUECHE_PAVILLION = config.getint(config_section, 'GPIO_OUT_KUECHE_PAVILLION', fallback=13)
-GPIO_OUT_GARAGE = config.getint(config_section, 'GPIO_OUT_GARAGE', fallback=19)
-GPIO_OUT_BEET_EINGANG = config.getint(config_section, 'GPIO_OUT_BEET_EINGANG', fallback=26)
-GPIO_IN_HAUPTSCHALTER = config.getint(config_section, 'GPIO_IN_HAUPTSCHALTER', fallback=5)
-
 # Sicherung für Hauptwasser-Status
 config_section='ALLGEMEIN'
 LOCKFILE = config.get(config_section, 'LOCKFILE', fallback='gpio.status')
@@ -41,6 +33,38 @@ DEBUG = config.getboolean(config_section, 'DEBUG', fallback=False)
 #############################
 # GPIO-Initialisierung
 #############################
+
+# GPIO-Belegung
+
+# TODO: Datei als Argument entgegen nehmen
+# TODO: Fehlerbehandlung wenn config nicht gefunden und auf Standardwerte zurückgegriffen wird
+#config.clear()
+config.read('../pi_gpio-config/pi_gpio.config')
+
+def getGPIO(query_config, query_name, fallback):
+    for section in query_config.sections():
+        if "GPIO_" in section:
+            name=query_config.get(section,"NAME", fallback="")
+            if name==query_name:
+                gpio=section[5:]
+                mode=query_config.get(section,"MODE", fallback="")
+                gpio_config = {
+                    "gpio": gpio,
+                    "mode": mode,
+                    "name": name
+                }
+                return gpio_config
+    return fallback
+
+GPIO_OUT_HAUPTWASSER = getGPIO(config, 'HAUPTWASSER', fallback=14)["gpio"]
+if(DEBUG):
+    print(f' GPIO_OUT_HAUPTWASSER={GPIO_OUT_HAUPTWASSER}')
+    
+config_section='GPIO_BELEGUNG'
+GPIO_OUT_KUECHE_PAVILLION = config.getint(config_section, 'GPIO_OUT_KUECHE_PAVILLION', fallback=13)
+GPIO_OUT_GARAGE = config.getint(config_section, 'GPIO_OUT_GARAGE', fallback=19)
+GPIO_OUT_BEET_EINGANG = config.getint(config_section, 'GPIO_OUT_BEET_EINGANG', fallback=26)
+GPIO_IN_HAUPTSCHALTER = config.getint(config_section, 'GPIO_IN_HAUPTSCHALTER', fallback=5)
 
 print('\n################################')
 print('# Raspberry-Bewässerungssystem #')
