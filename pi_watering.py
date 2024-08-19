@@ -88,8 +88,8 @@ try:
     GPIO.setup(GPIO_OUT_BEET_EINGANG, GPIO.OUT)
 
     GPIO.setup(GPIO_IN_HAUPTSCHALTER, GPIO.IN)
-except:
-    print('ERROR: Fehler beim Konfigurieren der GPIO Ein- und Ausgänge\n')
+except Exception as e:
+    print(f'ERROR: Fehler beim Konfigurieren der GPIO Ein- und Ausgänge\n{e}')
     exit(1)
 
 #############################
