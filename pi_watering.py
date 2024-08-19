@@ -59,7 +59,6 @@ def getGPIO(query_config, query_name, fallback):
 GPIO_OUT_HAUPTWASSER = getGPIO(config, 'HAUPTWASSER', fallback=14)["gpio"]
 #if(DEBUG):
 #    print(f' GPIO_OUT_HAUPTWASSER={GPIO_OUT_HAUPTWASSER}')
-print(f' GPIO_OUT_HAUPTWASSER={GPIO_OUT_HAUPTWASSER}')
     
 config_section='GPIO_BELEGUNG'
 GPIO_OUT_KUECHE_PAVILLION = config.getint(config_section, 'GPIO_OUT_KUECHE_PAVILLION', fallback=13)
