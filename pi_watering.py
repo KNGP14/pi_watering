@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO # type: ignore
 import time
 from datetime import datetime, timedelta
 import configparser
@@ -39,7 +39,7 @@ DEBUG = config.getboolean(config_section, 'DEBUG', fallback=False)
 # TODO: Datei als Argument entgegen nehmen
 # TODO: Fehlerbehandlung wenn config nicht gefunden und auf Standardwerte zurückgegriffen wird
 #config.clear()
-config.read('../pi_gpio-config/pi_gpio.config')
+config.read('../pi_config/pi.config')
 
 def getGPIO(query_config, query_name, fallback):
     for section in query_config.sections():
