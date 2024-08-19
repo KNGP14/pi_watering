@@ -1,0 +1,5 @@
+# GPIO-Steuerung für Raspberry
+RPi.GPIO ; sys_platform == 'linux'
+
+# Farbe von Terminausgaben anpassen
+colorama
