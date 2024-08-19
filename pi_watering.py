@@ -56,7 +56,7 @@ def getGPIO(query_config, query_name, fallback):
                 return gpio_config
     return fallback
 
-GPIO_OUT_HAUPTWASSER = getGPIO(config, 'HAUPTWASSER', fallback=14)["gpio"]
+GPIO_OUT_HAUPTWASSER = int(getGPIO(config, 'HAUPTWASSER', fallback=14)["gpio"])
 #if(DEBUG):
 #    print(f' GPIO_OUT_HAUPTWASSER={GPIO_OUT_HAUPTWASSER}')
     
