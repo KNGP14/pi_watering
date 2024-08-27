@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO # type: ignore
 from datetime import datetime, timedelta
 import configparser
 
