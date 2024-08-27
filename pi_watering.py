@@ -45,6 +45,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 if(args.CLI_PARAM_DEBUG):
+    print('')
     print('CLI_PARAM_GPIO_CONFIG: {:s}'.format(args.CLI_PARAM_GPIO_CONFIG))
     print('CLI_PARAM_CONFIG: {:s}'.format(args.CLI_PARAM_CONFIG))
     print('CLI_PARAM_DEBUG: {:b}'.format(args.CLI_PARAM_DEBUG))
@@ -58,6 +59,7 @@ DEBUG = args.CLI_PARAM_DEBUG
 
 # Bewässerungs-Konfiguration einlesen
 if(DEBUG):
+    print('')
     print(f'Bewässerungs-Konfiguration einlesen von {args.CLI_PARAM_GPIO_CONFIG} ...')
 config = configparser.ConfigParser()
 config.read(args.CLI_PARAM_CONFIG)
@@ -83,6 +85,7 @@ STATUS_ZU = config.get(config_section, 'STATUS_ZU', fallback='ZU')
 # TODO: Datei als Argument entgegen nehmen
 # TODO: Fehlerbehandlung wenn config nicht gefunden und auf Standardwerte zurückgegriffen wird
 if(DEBUG):
+    print('')
     print(f'GPIO-Belegung einlesen von {args.CLI_PARAM_GPIO_CONFIG} ...')
 config = configparser.ConfigParser()
 config.read(args.CLI_PARAM_GPIO_CONFIG)
