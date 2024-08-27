@@ -63,17 +63,17 @@ try:
     GPIO_OUT_GARAGE = getGPIO(config, 'GARAGE', fallback=19)["id"]
     GPIO_OUT_BEET_EINGANG = getGPIO(config, 'BEET_EINGANG', fallback=26)["id"]
     GPIO_IN_HAUPTSCHALTER = getGPIO(config, 'HAUPTSCHALTER_BEWAESSERUNG', fallback=5)["id"]
+
+    if(DEBUG):
+        print(f' GPIO_OUT_HAUPTWASSER={GPIO_OUT_HAUPTWASSER}')
+        print(f' GPIO_OUT_KUECHE_PAVILLION={GPIO_OUT_KUECHE_PAVILLION}')
+        print(f' GPIO_OUT_GARAGE={GPIO_OUT_GARAGE}')
+        print(f' GPIO_OUT_BEET_EINGANG={GPIO_OUT_BEET_EINGANG}')
+        print(f' GPIO_IN_HAUPTSCHALTER={GPIO_IN_HAUPTSCHALTER}')
+        exit(0)
 except Exception as e:
     print(f'ERROR: Fehler beim Einlesen und Umwandeln der GPIO Ein- und Ausgänge\n{e}')
     exit(1)
-
-if(DEBUG):
-    print(f' GPIO_OUT_HAUPTWASSER={GPIO_OUT_HAUPTWASSER}')
-    print(f' GPIO_OUT_KUECHE_PAVILLION={GPIO_OUT_KUECHE_PAVILLION}')
-    print(f' GPIO_OUT_GARAGE={GPIO_OUT_GARAGE}')
-    print(f' GPIO_OUT_BEET_EINGANG={GPIO_OUT_BEET_EINGANG}')
-    print(f' GPIO_IN_HAUPTSCHALTER={GPIO_IN_HAUPTSCHALTER}')
-    exit(0)
 
 print('\n################################')
 print('# Raspberry-Bewässerungssystem #')
