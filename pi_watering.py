@@ -62,7 +62,12 @@ if(DEBUG):
     print('')
     print(f'Bewässerungs-Konfiguration einlesen von {args.CLI_PARAM_CONFIG} ...')
 config = configparser.ConfigParser()
-config.read(args.CLI_PARAM_CONFIG)
+try:
+    config.read(args.CLI_PARAM_CONFIG)
+except Exception as e:
+    print('')
+    print(f'Fehler beim Einlese der Bewässerungs-Konfigurationsdatei {args.CLI_PARAM_CONFIG}!\n{e}')
+    exit(1)
 
 # Zeitschaltungen
 config_section='ZEITSTEUERUNG'
@@ -82,13 +87,16 @@ STATUS_ZU = config.get(config_section, 'STATUS_ZU', fallback='ZU')
 # GPIO-Belegung
 #############################
 
-# TODO: Datei als Argument entgegen nehmen
-# TODO: Fehlerbehandlung wenn config nicht gefunden und auf Standardwerte zurückgegriffen wird
 if(DEBUG):
     print('')
     print(f'GPIO-Belegung einlesen von {args.CLI_PARAM_GPIO_CONFIG} ...')
 config = configparser.ConfigParser()
-config.read(args.CLI_PARAM_GPIO_CONFIG)
+try:
+    config.read(args.CLI_PARAM_GPIO_CONFIG)
+except Exception as e:
+    print('')
+    print(f'Fehler beim Einlese der GPIO-Konfigurationsdatei {args.CLI_PARAM_GPIO_CONFIG}!\n{e}')
+    exit(1)
 
 def getGPIO(query_config, query_name, fallback):
     for section in query_config.sections():
