@@ -46,22 +46,23 @@ def getGPIO(query_config, query_name, fallback):
         if "GPIO_" in section:
             name=query_config.get(section,"NAME", fallback="")
             if name==query_name:
-                gpio=section[5:]
+                id=int(section[5:])
                 mode=query_config.get(section,"MODE", fallback="")
                 gpio_config = {
-                    "gpio": gpio,
+                    "id": id,
                     "mode": mode,
                     "name": name
                 }
+                print(gpio_config)
                 return gpio_config
     return fallback
 
 try:
-    GPIO_OUT_HAUPTWASSER = int(getGPIO(config, 'HAUPTWASSER', fallback=14)["gpio"])
-    GPIO_OUT_KUECHE_PAVILLION = int(getGPIO(config, 'KUECHE_PAVILLION', fallback=13)["gpio"])
-    GPIO_OUT_GARAGE = int(getGPIO(config, 'GARAGE', fallback=19)["gpio"])
-    GPIO_OUT_BEET_EINGANG = int(getGPIO(config, 'BEET_EINGANG', fallback=26)["gpio"])
-    GPIO_IN_HAUPTSCHALTER = int(getGPIO(config, 'HAUPTSCHALTER', fallback=5)["gpio"])
+    GPIO_OUT_HAUPTWASSER = getGPIO(config, 'HAUPTSCHALTER_BEWAESSERUNG', fallback=6)["id"]
+    GPIO_OUT_KUECHE_PAVILLION = getGPIO(config, 'KUECHE_PAVILLION', fallback=13)["id"]
+    GPIO_OUT_GARAGE = getGPIO(config, 'GARAGE', fallback=19)["gpio"]
+    GPIO_OUT_BEET_EINGANG = getGPIO(config, 'BEET_EINGANG', fallback=26)["id"]
+    GPIO_IN_HAUPTSCHALTER = getGPIO(config, 'HAUPTSCHALTER', fallback=5)["id"]
 except Exception as e:
     print(f'ERROR: Fehler beim Einlesen und Umwandeln der GPIO Ein- und Ausgänge\n{e}')
     exit(1)
