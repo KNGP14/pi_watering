@@ -1,3 +1,4 @@
+from argparse import ArgumentParser
 import RPi.GPIO as GPIO # type: ignore
 import time
 from datetime import datetime, timedelta
@@ -9,9 +10,57 @@ import configparser
 # 0 20 * * * python /home/seiko/gpio.py >> /home/seiko/gpio.log 2>&1
 # 7,14,21,28,35,42,49,56 * * * python /home/seiko/gpio_check.py >/dev/null 2>&1
 
-# Konfigurationsdatei einlesen
+#############################
+# Programmoptionen
+#############################
+
+DEFAULT_WATERING_CONFIG='pi_watering.config'
+
+parser = ArgumentParser(
+            description='Bewässerungssystem für Raspberry Pi 2B')
+
+parser.add_argument(
+            "-gc",
+            "--gpio-config",
+            default="../pi_config/pi.config",
+            dest="CLI_PARAM_GPIO_CONFIG",
+            required=False,
+            help="Pfad zur GPIO-Konfiguration pi.config des pi_config-Repositories")
+parser.add_argument(
+            "-c",
+            "--config",
+            default="./pi_watering.config",
+            dest="CLI_PARAM_CONFIG",
+            required=False,
+            help="Pfad zur Bewässerungs-Konfiguration pi_watering.config")
+parser.add_argument(
+            "-d",
+            "--debug",
+            default=False,
+            dest="CLI_PARAM_DEBUG",
+            required=False,
+            action="store_true",
+            help="Wenn angegeben, Debug-Modus aktivieren")
+
+args = parser.parse_args()
+
+if(args.CLI_PARAM_DEBUG):
+    print('CLI_PARAM_GPIO_CONFIG: {:s}'.format(args.CLI_PARAM_GPIO_CONFIG))
+    print('CLI_PARAM_CONFIG: {:s}'.format(args.CLI_PARAM_CONFIG))
+    print('CLI_PARAM_DEBUG: {:b}'.format(args.CLI_PARAM_DEBUG))
+
+# Debug-Schalter erzeugt mehr Ausgaben und reduziert Schaltzeiten
+DEBUG = args.CLI_PARAM_DEBUG
+
+#############################
+# Bewässerungs-Konfiguration
+#############################
+
+# Bewässerungs-Konfiguration einlesen
+if(DEBUG):
+    print(f'Bewässerungs-Konfiguration einlesen von {args.CLI_PARAM_GPIO_CONFIG} ...')
 config = configparser.ConfigParser()
-config.read('pi_watering.config')
+config.read(args.CLI_PARAM_CONFIG)
 
 # Zeitschaltungen
 config_section='ZEITSTEUERUNG'
@@ -27,19 +76,16 @@ STATUS_AUF = config.get(config_section, 'STATUS_AUF', fallback='AUF')
 STATUS_WIRD_GEOEFFNET = config.get(config_section, 'STATUS_WIRD_GEOEFFNET', fallback='WIRD_GEOEFFNET')
 STATUS_ZU = config.get(config_section, 'STATUS_ZU', fallback='ZU')
 
-# Debug-Schalter erzeugt mehr Ausgaben und reduziert Schaltzeiten
-DEBUG = config.getboolean(config_section, 'DEBUG', fallback=False)
-
 #############################
-# GPIO-Initialisierung
-#############################
-
 # GPIO-Belegung
+#############################
 
 # TODO: Datei als Argument entgegen nehmen
 # TODO: Fehlerbehandlung wenn config nicht gefunden und auf Standardwerte zurückgegriffen wird
-#config.clear()
-config.read('../pi_config/pi.config')
+if(DEBUG):
+    print(f'GPIO-Belegung einlesen von {args.CLI_PARAM_GPIO_CONFIG} ...')
+config = configparser.ConfigParser()
+config.read(args.CLI_PARAM_GPIO_CONFIG)
 
 def getGPIO(query_config, query_name, fallback):
     for section in query_config.sections():
@@ -53,7 +99,8 @@ def getGPIO(query_config, query_name, fallback):
                     "mode": mode,
                     "name": name
                 }
-                print(gpio_config)
+                if(DEBUG):
+                    print(gpio_config)
                 return gpio_config
     return fallback
 
@@ -70,10 +117,13 @@ try:
         print(f' GPIO_OUT_GARAGE={GPIO_OUT_GARAGE}')
         print(f' GPIO_OUT_BEET_EINGANG={GPIO_OUT_BEET_EINGANG}')
         print(f' GPIO_IN_HAUPTSCHALTER={GPIO_IN_HAUPTSCHALTER}')
-        exit(0)
 except Exception as e:
     print(f'ERROR: Fehler beim Einlesen und Umwandeln der GPIO Ein- und Ausgänge\n{e}')
     exit(1)
+
+#############################
+# Programmstart
+#############################
 
 print('\n################################')
 print('# Raspberry-Bewässerungssystem #')
