@@ -58,11 +58,11 @@ def getGPIO(query_config, query_name, fallback):
     return fallback
 
 try:
-    GPIO_OUT_HAUPTWASSER = getGPIO(config, 'HAUPTSCHALTER_BEWAESSERUNG', fallback=6)["id"]
+    GPIO_OUT_HAUPTWASSER = getGPIO(config, 'HAUPTWASSER', fallback=6)["id"]
     GPIO_OUT_KUECHE_PAVILLION = getGPIO(config, 'KUECHE_PAVILLION', fallback=13)["id"]
     GPIO_OUT_GARAGE = getGPIO(config, 'GARAGE', fallback=19)["id"]
     GPIO_OUT_BEET_EINGANG = getGPIO(config, 'BEET_EINGANG', fallback=26)["id"]
-    GPIO_IN_HAUPTSCHALTER = getGPIO(config, 'HAUPTSCHALTER', fallback=5)["id"]
+    GPIO_IN_HAUPTSCHALTER = getGPIO(config, 'HAUPTSCHALTER_BEWAESSERUNG', fallback=5)["id"]
 except Exception as e:
     print(f'ERROR: Fehler beim Einlesen und Umwandeln der GPIO Ein- und Ausgänge\n{e}')
     exit(1)
