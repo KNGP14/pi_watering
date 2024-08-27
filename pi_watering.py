@@ -58,7 +58,7 @@ if(args.CLI_PARAM_DEBUG):
     print('')
     print('DEBUG-Modus aktiviert:')
     print(' - Hauptschalter-Stellung überbrückt')
-    print(' - verkürzte Bewässerungszeit von 2 Sekunden\n')
+    print(' - verkürzte Bewässerungszeit von 2 Sekunden')
     print(' - CLI_PARAM_GPIO_CONFIG: {:s}'.format(args.CLI_PARAM_GPIO_CONFIG))
     print(' - CLI_PARAM_CONFIG: {:s}'.format(args.CLI_PARAM_CONFIG))
 
