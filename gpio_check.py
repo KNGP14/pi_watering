@@ -180,6 +180,7 @@ def close_gpio(name, gpio_id):
 # Sicherungsdatei einlesen un Status prüfen
 ###########################################
 
+print('')
 lockfile_content=""
 try:
     f = open(LOCKFILE, "r")
