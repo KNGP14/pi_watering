@@ -19,7 +19,6 @@ print('################################')
 print('')
 startTime = datetime.now()
 print( 'Zeitstempel: {:s}'.format(str(startTime)))
-print('')
 
 #############################
 # Programmoptionen
