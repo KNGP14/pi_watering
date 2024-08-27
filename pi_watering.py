@@ -144,10 +144,6 @@ except Exception as e:
     print(f'ERROR: Fehler beim Einlesen und Umwandeln der GPIO Ein- und Ausgänge\n{e}')
     exit(1)
 
-#############################
-# Programmstart
-#############################
-
 # BCM-Nummerierung verwenden
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -165,10 +161,10 @@ except Exception as e:
     exit(1)
 
 #############################
-# Bewässerungssteuerung
+# Hilfunktionen
 #############################
 
-# Hilfunktion zum Steuern des Hauptwasser
+# Hilfsfunktion: Steuern des Hauptwasser
 def control_main(mode):
 
     if(mode==STATUS_AUF):
@@ -212,7 +208,7 @@ def control_main(mode):
         print('ERROR: Unbekannter Modus für Hauptwasser')
         exit(1)
 
-
+# Hilfsfunktion: Steuern einzelner Bereiche
 def control_area(name, gpio_id, seconds, buffer):
     if(DEBUG):
         seconds=2
@@ -225,10 +221,14 @@ def control_area(name, gpio_id, seconds, buffer):
     GPIO.output(gpio_id, False)
     time.sleep(buffer)
 
+#############################
+# Programmstart
+#############################
 
 if(GPIO.input(GPIO_IN_HAUPTSCHALTER) == 1 or DEBUG):
     # Hauptschalter EIN >> Bewässerung starten
 
+    print('')
     print('Bewässerung wird gestartet ...\n')
 
     control_main(STATUS_AUF)
