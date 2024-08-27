@@ -10,6 +10,17 @@ import configparser
 # 0 20 * * * python /home/seiko/gpio.py >> /home/seiko/gpio.log 2>&1
 # 7,14,21,28,35,42,49,56 * * * python /home/seiko/gpio_check.py >/dev/null 2>&1
 
+
+print('\n################################')
+print('# Raspberry-Bewässerungssystem #')
+print('################################')
+
+# Zeitmessung starten
+print('')
+startTime = datetime.now()
+print( 'Zeitstempel: {:s}'.format(str(startTime)))
+print('')
+
 #############################
 # Programmoptionen
 #############################
@@ -135,16 +146,6 @@ except Exception as e:
 #############################
 # Programmstart
 #############################
-
-print('\n################################')
-print('# Raspberry-Bewässerungssystem #')
-print('################################')
-
-# Zeitmessung starten
-print('')
-startTime = datetime.now()
-print( 'Zeitstempel: {:s}'.format(str(startTime)))
-print('')
 
 # BCM-Nummerierung verwenden
 GPIO.setmode(GPIO.BCM)
