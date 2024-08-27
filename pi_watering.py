@@ -60,7 +60,7 @@ def getGPIO(query_config, query_name, fallback):
 try:
     GPIO_OUT_HAUPTWASSER = getGPIO(config, 'HAUPTSCHALTER_BEWAESSERUNG', fallback=6)["id"]
     GPIO_OUT_KUECHE_PAVILLION = getGPIO(config, 'KUECHE_PAVILLION', fallback=13)["id"]
-    GPIO_OUT_GARAGE = getGPIO(config, 'GARAGE', fallback=19)["gpio"]
+    GPIO_OUT_GARAGE = getGPIO(config, 'GARAGE', fallback=19)["id"]
     GPIO_OUT_BEET_EINGANG = getGPIO(config, 'BEET_EINGANG', fallback=26)["id"]
     GPIO_IN_HAUPTSCHALTER = getGPIO(config, 'HAUPTSCHALTER', fallback=5)["id"]
 except Exception as e:
