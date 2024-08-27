@@ -227,6 +227,7 @@ def control_area(name, gpio_id, seconds, buffer):
 
 if(GPIO.input(GPIO_IN_HAUPTSCHALTER) == 1 or DEBUG):
     # Hauptschalter EIN > Bewässerung starten
+    print('')
     print('DEBUG-Modus aktiviert:')
     print(' - Hauptschalter-Stellung überbrückt')
     print(' - verkürzte Bewässerungszeit von 2 Sekunden\n')
