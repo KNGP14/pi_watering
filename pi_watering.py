@@ -60,7 +60,7 @@ DEBUG = args.CLI_PARAM_DEBUG
 # Bewässerungs-Konfiguration einlesen
 if(DEBUG):
     print('')
-    print(f'Bewässerungs-Konfiguration einlesen von {args.CLI_PARAM_GPIO_CONFIG} ...')
+    print(f'Bewässerungs-Konfiguration einlesen von {args.CLI_PARAM_CONFIG} ...')
 config = configparser.ConfigParser()
 config.read(args.CLI_PARAM_CONFIG)
 
