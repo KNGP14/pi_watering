@@ -56,9 +56,11 @@ args = parser.parse_args()
 
 if(args.CLI_PARAM_DEBUG):
     print('')
-    print('CLI_PARAM_GPIO_CONFIG: {:s}'.format(args.CLI_PARAM_GPIO_CONFIG))
-    print('CLI_PARAM_CONFIG: {:s}'.format(args.CLI_PARAM_CONFIG))
-    print('CLI_PARAM_DEBUG: {:b}'.format(args.CLI_PARAM_DEBUG))
+    print('DEBUG-Modus aktiviert:')
+    print(' - Hauptschalter-Stellung überbrückt')
+    print(' - verkürzte Bewässerungszeit von 2 Sekunden\n')
+    print(' - CLI_PARAM_GPIO_CONFIG: {:s}'.format(args.CLI_PARAM_GPIO_CONFIG))
+    print(' - CLI_PARAM_CONFIG: {:s}'.format(args.CLI_PARAM_CONFIG))
 
 # Debug-Schalter erzeugt mehr Ausgaben und reduziert Schaltzeiten
 DEBUG = args.CLI_PARAM_DEBUG
@@ -225,11 +227,7 @@ def control_area(name, gpio_id, seconds, buffer):
 
 
 if(GPIO.input(GPIO_IN_HAUPTSCHALTER) == 1 or DEBUG):
-    # Hauptschalter EIN > Bewässerung starten
-    print('')
-    print('DEBUG-Modus aktiviert:')
-    print(' - Hauptschalter-Stellung überbrückt')
-    print(' - verkürzte Bewässerungszeit von 2 Sekunden\n')
+    # Hauptschalter EIN >> Bewässerung starten
 
     print('Bewässerung wird gestartet ...\n')
 
@@ -245,7 +243,7 @@ if(GPIO.input(GPIO_IN_HAUPTSCHALTER) == 1 or DEBUG):
 
 
 else:
-    # Hauptschalter AUS > keine Bewässerung
+    # Hauptschalter AUS >> keine Bewässerung
     print('INFO: Hauptschalter aus > keine Bewässerung\n')
 
 # Benutzte GPIOs freigeben (GPIO-Ausgänge werden ausgeschalten)
