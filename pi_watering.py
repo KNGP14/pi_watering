@@ -56,15 +56,23 @@ def getGPIO(query_config, query_name, fallback):
                 return gpio_config
     return fallback
 
-GPIO_OUT_HAUPTWASSER = int(getGPIO(config, 'HAUPTWASSER', fallback=14)["gpio"])
-#if(DEBUG):
-#    print(f' GPIO_OUT_HAUPTWASSER={GPIO_OUT_HAUPTWASSER}')
-    
-config_section='GPIO_BELEGUNG'
-GPIO_OUT_KUECHE_PAVILLION = config.getint(config_section, 'GPIO_OUT_KUECHE_PAVILLION', fallback=13)
-GPIO_OUT_GARAGE = config.getint(config_section, 'GPIO_OUT_GARAGE', fallback=19)
-GPIO_OUT_BEET_EINGANG = config.getint(config_section, 'GPIO_OUT_BEET_EINGANG', fallback=26)
-GPIO_IN_HAUPTSCHALTER = config.getint(config_section, 'GPIO_IN_HAUPTSCHALTER', fallback=5)
+try:
+    GPIO_OUT_HAUPTWASSER = int(getGPIO(config, 'HAUPTWASSER', fallback=14)["gpio"])
+    GPIO_OUT_KUECHE_PAVILLION = int(getGPIO(config, 'KUECHE_PAVILLION', fallback=13)["gpio"])
+    GPIO_OUT_GARAGE = int(getGPIO(config, 'GARAGE', fallback=19)["gpio"])
+    GPIO_OUT_BEET_EINGANG = int(getGPIO(config, 'BEET_EINGANG', fallback=26)["gpio"])
+    GPIO_IN_HAUPTSCHALTER = int(getGPIO(config, 'HAUPTSCHALTER', fallback=5)["gpio"])
+except Exception as e:
+    print(f'ERROR: Fehler beim Einlesen und Umwandeln der GPIO Ein- und Ausgänge\n{e}')
+    exit(1)
+
+if(DEBUG):
+    print(f' GPIO_OUT_HAUPTWASSER={GPIO_OUT_HAUPTWASSER}')
+    print(f' GPIO_OUT_KUECHE_PAVILLION={GPIO_OUT_KUECHE_PAVILLION}')
+    print(f' GPIO_OUT_GARAGE={GPIO_OUT_GARAGE}')
+    print(f' GPIO_OUT_BEET_EINGANG={GPIO_OUT_BEET_EINGANG}')
+    print(f' GPIO_IN_HAUPTSCHALTER={GPIO_IN_HAUPTSCHALTER}')
+    exit(0)
 
 print('\n################################')
 print('# Raspberry-Bewässerungssystem #')
