@@ -1,10 +1,67 @@
+from argparse import ArgumentParser
 import RPi.GPIO as GPIO
 from datetime import datetime, timedelta
 import configparser
 
+print('\n#######################################')
+print('# Überprüfung des Bewässerungssystems #')
+print('#######################################\n')
+
+#############################
+# Programmoptionen
+#############################
+
+parser = ArgumentParser(
+            description='Überprüfung des Bewässerungssystems')
+
+parser.add_argument(
+            "-gc",
+            "--gpio-config",
+            default="../pi_config/pi.config",
+            dest="CLI_PARAM_GPIO_CONFIG",
+            required=False,
+            help="Pfad zur GPIO-Konfiguration pi.config des pi_config-Repositories")
+parser.add_argument(
+            "-c",
+            "--config",
+            default="./pi_watering.config",
+            dest="CLI_PARAM_CONFIG",
+            required=False,
+            help="Pfad zur Bewässerungs-Konfiguration pi_watering.config")
+parser.add_argument(
+            "-l",
+            "--lockfile",
+            default="./gpio.status",
+            dest="CLI_PARAM_LOCKFILE",
+            required=False,
+            help="Pfad zur LOCK-Datei, die bei Ansteuerung von GPIOs erzeugt wird (für gpio_check.py)")
+parser.add_argument(
+            "-d",
+            "--debug",
+            default=False,
+            dest="CLI_PARAM_DEBUG",
+            required=False,
+            action="store_true",
+            help="Wenn angegeben, Debug-Modus aktivieren")
+
+args = parser.parse_args()
+
+if(args.CLI_PARAM_DEBUG):
+    print('')
+    print('DEBUG-Modus aktiviert:')
+    print(' - Hauptschalter-Stellung überbrückt')
+    print(' - verkürzte Bewässerungszeit von 2 Sekunden')
+    print(' - CLI_PARAM_GPIO_CONFIG: {:s}'.format(args.CLI_PARAM_GPIO_CONFIG))
+    print(' - CLI_PARAM_CONFIG: {:s}'.format(args.CLI_PARAM_CONFIG))
+    print(' - CLI_PARAM_LOCKFILE: {:s}'.format(args.CLI_PARAM_LOCKFILE))
+
+# Parameter setzen aus Optionen
+DEBUG = args.CLI_PARAM_DEBUG
+LOCKFILE = args.CLI_PARAM_LOCKFILE
+
 # Konfigurationsdatei einlesen
 config = configparser.ConfigParser()
-config.read('pi_watering.config')
+config.read(args.CLI_PARAM_CONFIG)
 
 # Zeitschaltungen
 config_section='ZEITSTEUERUNG'
@@ -23,23 +80,60 @@ LAUFZEIT = SECONDS_SCHALTHYSTERESE + \
 MAX_RUNTIME_SECONDS=LAUFZEIT+MAX_LAUFZEIT_PUFFER
 MAX_RUNTIME = timedelta(seconds = MAX_RUNTIME_SECONDS)
 
-# GPIO-Belegung
-config_section='GPIO_BELEGUNG'
-GPIO_OUT_HAUPTWASSER = config.getint(config_section, 'GPIO_OUT_HAUPTWASSER', fallback=6)
-GPIO_OUT_KUECHE_PAVILLION = config.getint(config_section, 'GPIO_OUT_KUECHE_PAVILLION', fallback=13)
-GPIO_OUT_GARAGE = config.getint(config_section, 'GPIO_OUT_GARAGE', fallback=19)
-GPIO_OUT_BEET_EINGANG = config.getint(config_section, 'GPIO_OUT_BEET_EINGANG', fallback=26)
-
 # Sicherungsdatei für Hauptwasser-Status
 config_section='ALLGEMEIN'
-LOCKFILE = config.get(config_section, 'LOCKFILE', fallback='gpio.status')
 STATUS_AUF = config.get(config_section, 'STATUS_AUF', fallback='AUF')
 STATUS_WIRD_GEOEFFNET = config.get(config_section, 'STATUS_WIRD_GEOEFFNET', fallback='WIRD_GEOEFFNET')
 STATUS_ZU = config.get(config_section, 'STATUS_ZU', fallback='ZU')
 
-print('\n#######################################')
-print('# Überprüfung des Bewässerungssystems #')
-print('#######################################\n')
+#############################
+# GPIO-Belegung
+#############################
+
+if(DEBUG):
+    print('')
+    print(f'GPIO-Belegung einlesen von {args.CLI_PARAM_GPIO_CONFIG} ...')
+config = configparser.ConfigParser()
+try:
+    config.read(args.CLI_PARAM_GPIO_CONFIG)
+except Exception as e:
+    print('')
+    print(f'Fehler beim Einlese der GPIO-Konfigurationsdatei {args.CLI_PARAM_GPIO_CONFIG}!\n{e}')
+    exit(1)
+
+def getGPIO(query_config, query_name, fallback):
+    for section in query_config.sections():
+        if "GPIO_" in section:
+            name=query_config.get(section,"NAME", fallback="")
+            if name==query_name:
+                id=int(section[5:])
+                mode=query_config.get(section,"MODE", fallback="")
+                gpio_config = {
+                    "id": id,
+                    "mode": mode,
+                    "name": name
+                }
+                if(DEBUG):
+                    print(gpio_config)
+                return gpio_config
+    return fallback
+
+try:
+    GPIO_OUT_HAUPTWASSER = getGPIO(config, 'HAUPTWASSER', fallback=6)["id"]
+    GPIO_OUT_KUECHE_PAVILLION = getGPIO(config, 'KUECHE_PAVILLION', fallback=13)["id"]
+    GPIO_OUT_GARAGE = getGPIO(config, 'GARAGE', fallback=19)["id"]
+    GPIO_OUT_BEET_EINGANG = getGPIO(config, 'BEET_EINGANG', fallback=26)["id"]
+    GPIO_IN_HAUPTSCHALTER = getGPIO(config, 'HAUPTSCHALTER_BEWAESSERUNG', fallback=5)["id"]
+
+    if(DEBUG):
+        print(f' GPIO_OUT_HAUPTWASSER={GPIO_OUT_HAUPTWASSER}')
+        print(f' GPIO_OUT_KUECHE_PAVILLION={GPIO_OUT_KUECHE_PAVILLION}')
+        print(f' GPIO_OUT_GARAGE={GPIO_OUT_GARAGE}')
+        print(f' GPIO_OUT_BEET_EINGANG={GPIO_OUT_BEET_EINGANG}')
+        print(f' GPIO_IN_HAUPTSCHALTER={GPIO_IN_HAUPTSCHALTER}')
+except Exception as e:
+    print(f'ERROR: Fehler beim Einlesen und Umwandeln der GPIO Ein- und Ausgänge\n{e}')
+    exit(1)
 
 # BCM-Nummerierung verwenden
 GPIO.setmode(GPIO.BCM)
