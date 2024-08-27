@@ -24,8 +24,6 @@ print( 'Zeitstempel: {:s}'.format(str(startTime)))
 # Programmoptionen
 #############################
 
-DEFAULT_WATERING_CONFIG='pi_watering.config'
-
 parser = ArgumentParser(
             description='Bewässerungssystem für Raspberry Pi 2B')
 
@@ -44,6 +42,13 @@ parser.add_argument(
             required=False,
             help="Pfad zur Bewässerungs-Konfiguration pi_watering.config")
 parser.add_argument(
+            "-l",
+            "--lockfile",
+            default="./gpio.status",
+            dest="CLI_PARAM_LOCKFILE",
+            required=False,
+            help="Pfad zur LOCK-Datei, die bei Ansteuerung von GPIOs erzeugt wird (für gpio_check.py)")
+parser.add_argument(
             "-d",
             "--debug",
             default=False,
@@ -61,9 +66,11 @@ if(args.CLI_PARAM_DEBUG):
     print(' - verkürzte Bewässerungszeit von 2 Sekunden')
     print(' - CLI_PARAM_GPIO_CONFIG: {:s}'.format(args.CLI_PARAM_GPIO_CONFIG))
     print(' - CLI_PARAM_CONFIG: {:s}'.format(args.CLI_PARAM_CONFIG))
+    print(' - CLI_PARAM_LOCKFILE: {:s}'.format(args.CLI_PARAM_LOCKFILE))
 
-# Debug-Schalter erzeugt mehr Ausgaben und reduziert Schaltzeiten
+# Parameter setzen aus Optionen
 DEBUG = args.CLI_PARAM_DEBUG
+LOCKFILE = args.CLI_PARAM_LOCKFILE
 
 #############################
 # Bewässerungs-Konfiguration
@@ -90,7 +97,6 @@ SECONDS_BEET_EINGANG = config.getint(config_section, 'SECONDS_BEET_EINGANG', fal
 
 # Sicherung für Hauptwasser-Status
 config_section='ALLGEMEIN'
-LOCKFILE = config.get(config_section, 'LOCKFILE', fallback='gpio.status')
 STATUS_AUF = config.get(config_section, 'STATUS_AUF', fallback='AUF')
 STATUS_WIRD_GEOEFFNET = config.get(config_section, 'STATUS_WIRD_GEOEFFNET', fallback='WIRD_GEOEFFNET')
 STATUS_ZU = config.get(config_section, 'STATUS_ZU', fallback='ZU')
