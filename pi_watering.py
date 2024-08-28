@@ -4,13 +4,6 @@ import time
 from datetime import datetime, timedelta
 import configparser
 
-# crontab -e
-# TODO: Install-Parameter zum Installieren/Überschreiben des crontab
-# 0 7 * * * python /home/seiko/gpio.py >> /home/seiko/gpio.log 2>&1
-# 0 20 * * * python /home/seiko/gpio.py >> /home/seiko/gpio.log 2>&1
-# 7,14,21,28,35,42,49,56 * * * python /home/seiko/gpio_check.py >/dev/null 2>&1
-
-
 print('\n################################')
 print('# Raspberry-Bewässerungssystem #')
 print('################################')
